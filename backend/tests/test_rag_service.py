@@ -6,7 +6,7 @@ from app.services.rag_service import generate_rag_answer
 
 
 # --------------------------------------------------
-# TEST 1: Annual Leave - Extractive RAG
+# TEST 1: Annual Leave - LLM-First RAG
 # --------------------------------------------------
 
 def test_generate_rag_answer_annual_leave():
@@ -35,6 +35,10 @@ def test_generate_rag_answer_annual_leave():
         mock_store.count.return_value = 1
         mock_hybrid.search.return_value = search_results
 
+        mock_llm.generate.return_value = (
+            "Employees receive 30 days of paid annual leave."
+        )
+
         result = generate_rag_answer(
             "How many days of annual leave do employees receive?"
         )
@@ -42,10 +46,10 @@ def test_generate_rag_answer_annual_leave():
         assert "30 days" in result["answer"]
         assert len(result["sources"]) == 1
         assert result["sources"][0]["filename"] == "company_policy.txt"
-        assert result["model"] == "extractive"
+        assert result["model"] == "ollama"
 
         mock_hybrid.search.assert_called_once()
-        mock_llm.generate.assert_not_called()
+        mock_llm.generate.assert_called_once()
 
 
 # --------------------------------------------------
@@ -73,6 +77,7 @@ def test_generate_rag_answer_no_relevant_results():
         assert "couldn't find sufficiently relevant information" in (
             result["answer"]
         )
+        assert result["model"] == "none"
 
         mock_llm.generate.assert_not_called()
 
@@ -97,6 +102,7 @@ def test_generate_rag_answer_no_documents():
 
         assert result["sources"] == []
         assert result["answer"] == "No documents have been uploaded yet."
+        assert result["model"] == "none"
 
         mock_hybrid.search.assert_not_called()
 
@@ -111,6 +117,7 @@ def test_generate_rag_answer_empty_question():
 
     assert result["answer"] == "Please provide a valid question."
     assert result["sources"] == []
+    assert result["model"] == "none"
 
 
 # --------------------------------------------------
@@ -127,7 +134,7 @@ def test_generate_rag_answer_invalid_top_k():
 
 
 # --------------------------------------------------
-# TEST 6: LLM Fallback
+# TEST 6: Successful LLM Answer
 # --------------------------------------------------
 
 def test_generate_rag_answer_uses_llm():
@@ -152,7 +159,7 @@ def test_generate_rag_answer_uses_llm():
     ) as mock_hybrid, patch(
         "app.services.rag_service.answer_from_context",
         return_value=None,
-    ), patch(
+    ) as mock_answer, patch(
         "app.services.rag_service.ollama_service"
     ) as mock_llm:
 
@@ -173,6 +180,7 @@ def test_generate_rag_answer_uses_llm():
         assert result["model"] == "ollama"
 
         mock_llm.generate.assert_called_once()
+        mock_answer.assert_not_called()
 
 
 # --------------------------------------------------
@@ -201,7 +209,7 @@ def test_generate_rag_answer_empty_llm_response():
     ) as mock_hybrid, patch(
         "app.services.rag_service.answer_from_context",
         return_value=None,
-    ), patch(
+    ) as mock_answer, patch(
         "app.services.rag_service.ollama_service"
     ) as mock_llm:
 
@@ -218,7 +226,10 @@ def test_generate_rag_answer_empty_llm_response():
             "in the uploaded documents."
         )
 
-        assert result["model"] == "ollama"
+        assert result["model"] == "none"
+
+        mock_llm.generate.assert_called_once()
+        mock_answer.assert_called_once()
 
 
 # --------------------------------------------------
@@ -285,8 +296,9 @@ def test_generate_rag_answer_uses_filtered_context():
         )
 
         assert result["model"] == "ollama"
-        
-        # --------------------------------------------------
+
+
+# --------------------------------------------------
 # TEST 9: Reject Prompt Leakage from LLM
 # --------------------------------------------------
 
@@ -332,6 +344,8 @@ def test_generate_rag_answer_rejects_prompt_leakage():
             "I couldn't find sufficient information "
             "in the uploaded documents."
         )
+
+        assert result["model"] == "none"
 
 
 # --------------------------------------------------
@@ -381,6 +395,8 @@ def test_generate_rag_answer_rejects_unsupported_answer():
             "in the uploaded documents."
         )
 
+        assert result["model"] == "none"
+
 
 # --------------------------------------------------
 # TEST 11: Accept Valid Grounded LLM Answer
@@ -411,7 +427,7 @@ def test_generate_rag_answer_accepts_grounded_answer():
     ) as mock_hybrid, patch(
         "app.services.rag_service.answer_from_context",
         return_value=None,
-    ), patch(
+    ) as mock_answer, patch(
         "app.services.rag_service.ollama_service"
     ) as mock_llm:
 
@@ -430,6 +446,128 @@ def test_generate_rag_answer_accepts_grounded_answer():
         assert "30 days" in result["answer"]
         assert result["model"] == "ollama"
         assert len(result["sources"]) == 1
+
+        mock_answer.assert_not_called()
+
+
+# --------------------------------------------------
+# TEST 12: LLM Failure - Extractive Fallback
+# --------------------------------------------------
+
+def test_generate_rag_answer_uses_extractive_fallback_on_llm_failure():
+
+    search_results = [
+        {
+            "id": "chunk-1",
+            "document": (
+                "Annual leave requests must be approved "
+                "by the employee's direct manager."
+            ),
+            "metadata": {
+                "original_filename": "company_policy.txt",
+                "document_id": "doc-1",
+                "chunk_index": 0,
+            },
+            "rrf_score": 0.0325,
+        }
+    ]
+
+    extracted_answer = (
+        "Annual leave requests must be approved "
+        "by the employee's direct manager."
+    )
+
+    with patch(
+        "app.services.rag_service.vector_store"
+    ) as mock_store, patch(
+        "app.services.rag_service.hybrid_search"
+    ) as mock_hybrid, patch(
+        "app.services.rag_service.ollama_service"
+    ) as mock_llm, patch(
+        "app.services.rag_service.answer_from_context",
+        return_value=extracted_answer,
+    ) as mock_answer:
+
+        mock_store.count.return_value = 1
+        mock_hybrid.search.return_value = search_results
+
+        mock_llm.generate.side_effect = RuntimeError(
+            "Ollama is unavailable."
+        )
+
+        result = generate_rag_answer(
+            "Who approves annual leave requests?"
+        )
+
+        assert result["answer"] == extracted_answer
+        assert result["model"] == "extractive"
+        assert len(result["sources"]) == 1
+
+        mock_llm.generate.assert_called_once()
+        mock_answer.assert_called_once()
+
+
+# --------------------------------------------------
+# TEST 13: Invalid LLM Answer - Extractive Fallback
+# --------------------------------------------------
+
+def test_generate_rag_answer_uses_extractive_fallback_on_invalid_answer():
+
+    search_results = [
+        {
+            "id": "chunk-1",
+            "document": (
+                "Employees receive 30 days of paid annual leave "
+                "per calendar year."
+            ),
+            "metadata": {
+                "original_filename": "company_policy.txt",
+                "document_id": "doc-1",
+                "chunk_index": 0,
+            },
+            "rrf_score": 0.0325,
+        }
+    ]
+
+    extracted_answer = (
+        "Employees receive 30 days of paid annual leave "
+        "per calendar year."
+    )
+
+    with patch(
+        "app.services.rag_service.vector_store"
+    ) as mock_store, patch(
+        "app.services.rag_service.hybrid_search"
+    ) as mock_hybrid, patch(
+        "app.services.rag_service.ollama_service"
+    ) as mock_llm, patch(
+        "app.services.rag_service.answer_from_context",
+        return_value=extracted_answer,
+    ) as mock_answer:
+
+        mock_store.count.return_value = 1
+        mock_hybrid.search.return_value = search_results
+
+        mock_llm.generate.return_value = (
+            "Employees receive unlimited holidays "
+            "and free international flights."
+        )
+
+        result = generate_rag_answer(
+            "Explain the annual leave entitlement."
+        )
+
+        assert result["answer"] == extracted_answer
+        assert result["model"] == "extractive"
+        assert len(result["sources"]) == 1
+
+        mock_llm.generate.assert_called_once()
+        mock_answer.assert_called_once()
+
+
+# --------------------------------------------------
+# TEST 14: Conversational Query Rewriting
+# --------------------------------------------------
 
 def test_generate_rag_answer_uses_rewritten_query_for_retrieval():
 
@@ -466,8 +604,11 @@ def test_generate_rag_answer_uses_rewritten_query_for_retrieval():
         },
     ]
 
-    rewritten_query = (
-        "Who approves annual leave requests?"
+    rewritten_query = "Who approves annual leave requests?"
+
+    extracted_answer = (
+        "Annual leave requests must be approved "
+        "by the employee's direct manager."
     )
 
     with patch(
@@ -481,15 +622,18 @@ def test_generate_rag_answer_uses_rewritten_query_for_retrieval():
         "app.services.rag_service.filter_context",
         return_value=search_results,
     ) as mock_filter, patch(
+        "app.services.rag_service.ollama_service"
+    ) as mock_llm, patch(
         "app.services.rag_service.answer_from_context",
-        return_value=(
-            "Annual leave requests must be approved "
-            "by the employee's direct manager."
-        ),
+        return_value=extracted_answer,
     ) as mock_answer:
 
         mock_store.count.return_value = 1
         mock_hybrid.search.return_value = search_results
+
+        mock_llm.generate.side_effect = RuntimeError(
+            "Ollama is unavailable."
+        )
 
         result = generate_rag_answer(
             question="Who approves it?",
@@ -517,6 +661,6 @@ def test_generate_rag_answer_uses_rewritten_query_for_retrieval():
             conversation_history=conversation_history,
         )
 
-        assert "direct manager" in result["answer"]
+        assert result["answer"] == extracted_answer
         assert result["model"] == "extractive"
         assert len(result["sources"]) == 1

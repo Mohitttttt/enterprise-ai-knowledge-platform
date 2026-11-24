@@ -1,3 +1,5 @@
+import logging
+
 from app.services.hybrid_search import hybrid_search
 from app.services.vector_store import vector_store
 from app.services.context_filter import filter_context
@@ -7,6 +9,9 @@ from app.services.llm_service import ollama_service
 from app.services.answer_service import answer_from_context
 from app.services.answer_validator import validate_answer
 from app.services.query_rewriter import rewrite_query
+
+
+logger = logging.getLogger(__name__)
 
 
 NO_DOCUMENTS_MESSAGE = "No documents have been uploaded yet."
@@ -29,9 +34,6 @@ def build_retrieval_query(
     """
     Build a standalone retrieval query using
     conversational query rewriting.
-
-    The original question remains unchanged.
-    Only the retrieval query is rewritten.
     """
 
     return rewrite_query(
@@ -55,9 +57,9 @@ def generate_rag_answer(
     4. Retrieve relevant document chunks.
     5. Filter irrelevant context.
     6. Build document context and source metadata.
-    7. Try extractive answering.
-    8. Use Ollama when extraction is insufficient.
-    9. Validate the generated answer.
+    7. Generate an answer using Ollama.
+    8. Validate the generated answer.
+    9. Fall back to extractive answering if necessary.
     10. Return the answer with source metadata.
     """
 
@@ -127,7 +129,49 @@ def generate_rag_answer(
             "model": "none",
         }
 
-    # STEP 7: Try extractive answering first.
+    # STEP 7: Generate an answer using Ollama.
+    prompt = build_rag_prompt(
+        question=question,
+        context=context,
+        conversation_history=conversation_history,
+    )
+
+    try:
+        generated_answer = ollama_service.generate(
+            prompt,
+            temperature=0.0,
+        )
+
+        # STEP 8: Validate the generated answer.
+        validation_result = validate_answer(
+            answer=generated_answer,
+            context=context,
+            minimum_grounding_score=0.5,
+        )
+
+        if validation_result["is_valid"]:
+            return {
+                "question": question,
+                "answer": validation_result["answer"],
+                "sources": sources,
+                "model": "ollama",
+            }
+
+        logger.warning(
+            "Ollama answer rejected. Reason: %s. "
+            "Grounding score: %s. "
+            "Attempting extractive fallback.",
+            validation_result["reason"],
+            validation_result["grounding_score"],
+        )
+
+    except Exception:
+        logger.exception(
+            "Ollama generation failed. "
+            "Attempting extractive fallback."
+        )
+
+    # STEP 9: Fall back to extractive answering.
     extracted_answer = answer_from_context(
         question=question,
         context=context,
@@ -142,35 +186,10 @@ def generate_rag_answer(
             "model": "extractive",
         }
 
-    # STEP 8: Fall back to Ollama.
-    prompt = build_rag_prompt(
-        question=question,
-        context=context,
-        conversation_history=conversation_history,
-    )
-
-    try:
-        answer = ollama_service.generate(
-            prompt,
-            temperature=0.0,
-        )
-
-    except Exception:
-        answer = None
-
-    # STEP 9: Validate the generated answer.
-    validation_result = validate_answer(
-        answer=answer,
-        context=context,
-        minimum_grounding_score=0.5,
-    )
-
-    answer = validation_result["answer"]
-
-    # STEP 10: Return the final response.
+    # STEP 10: Neither answering method produced an acceptable answer.
     return {
         "question": question,
-        "answer": answer,
+        "answer": UNSUPPORTED_ANSWER,
         "sources": sources,
-        "model": "ollama",
+        "model": "none",
     }
