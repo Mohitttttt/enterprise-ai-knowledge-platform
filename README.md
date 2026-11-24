@@ -158,6 +158,7 @@ enterprise-ai-knowledge-platform/
 │   │
 │   ├── tests/
 │   ├── requirements.txt
+│   ├── requirements-dev.txt
 │   └── test_company_policy.txt
 │
 ├── .gitignore
@@ -200,7 +201,7 @@ Activate it on Windows PowerShell:
 ### 3. Install dependencies
 
 ```bash
-python -m pip install -r requirements.txt
+python -m pip install -r requirements-dev.txt
 ```
 
 ### 4. Set up Ollama
