@@ -1,0 +1,15 @@
+﻿IT SUPPORT POLICY
+Version: 1.0
+Effective date: 1 January 2026
+
+1. Account Lockouts
+Employees whose accounts become locked after multiple unsuccessful login attempts must contact the IT Support team. Employees must provide their company email address and a description of the issue. IT Support will verify the employee's identity before restoring account access.
+
+2. Software Installation
+Employees must submit a software installation request to IT Support. The request must include the software name, business purpose, and device information. Employees must not install unapproved software on company devices.
+
+3. Hardware Problems
+Employees experiencing problems with company laptops, keyboards, monitors, or other equipment should submit a support request. IT Support will assess the issue and arrange repair or replacement when necessary.
+
+4. Support Response
+IT Support aims to acknowledge standard support requests within one business day. Critical incidents affecting multiple employees are prioritised.

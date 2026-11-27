@@ -1,0 +1,21 @@
+﻿INFORMATION SECURITY POLICY
+Version: 1.0
+Effective date: 1 January 2026
+
+1. Multi-Factor Authentication
+Employees must enable multi-factor authentication (MFA) for all supported company accounts. Authentication codes must never be shared with another person.
+
+2. Password Security
+Employees must use strong, unique passwords for company accounts. Passwords must never be shared with colleagues, managers, or external parties.
+
+3. Phishing Emails
+Employees who receive suspicious emails must not open unexpected attachments or follow suspicious links. Suspected phishing emails must be reported to the IT Security team.
+
+4. Data Handling
+Confidential company information must only be stored in company-approved systems. Employees must not transfer confidential information to personal cloud storage accounts.
+
+5. Lost Devices
+Lost or stolen company devices must be reported to IT Support immediately. Employees should provide the device type and the approximate time and location of the incident.
+
+6. Security Incidents
+Employees must report suspected unauthorised access or disclosure of company information to the IT Security team immediately.

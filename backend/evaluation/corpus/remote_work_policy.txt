@@ -1,0 +1,18 @@
+﻿REMOTE WORK POLICY
+Version: 1.0
+Effective date: 1 January 2026
+
+1. Eligibility
+Employees may request remote work arrangements when their job responsibilities can be performed outside the office. Remote work is not an automatic employee entitlement.
+
+2. Approval
+All remote work arrangements must receive approval from the employee's manager before they begin. Managers may consider business requirements, team coordination, and employee responsibilities when reviewing requests.
+
+3. Equipment
+Employees working remotely may request company-approved equipment through IT Support. Company equipment must be used in accordance with IT and information-security policies.
+
+4. Working Hours
+Employees working remotely must remain available during their agreed working schedule. Any changes to working hours must be agreed with their manager.
+
+5. Information Security
+Employees must protect confidential company information when working remotely. Public or unsecured networks should not be used to access sensitive company systems without approved security protection.

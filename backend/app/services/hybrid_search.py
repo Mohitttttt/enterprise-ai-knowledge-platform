@@ -1,4 +1,3 @@
-
 from typing import Any
 
 from app.services.embedding_service import generate_embedding
@@ -6,8 +5,17 @@ from app.services.keyword_search import keyword_search
 from app.services.vector_store import vector_store
 
 
-RRF_K = 60
+# --------------------------------------------------
+# CONFIGURATION
+# --------------------------------------------------
 
+RRF_K = 40
+CANDIDATE_MULTIPLIER = 3
+
+
+# --------------------------------------------------
+# RECIPROCAL RANK FUSION
+# --------------------------------------------------
 
 def reciprocal_rank_fusion(
     rankings: list[list[dict[str, Any]]],
@@ -16,7 +24,15 @@ def reciprocal_rank_fusion(
 ) -> list[dict[str, Any]]:
     """
     Combine multiple ranked result lists using
-    Reciprocal Rank Fusion.
+    Reciprocal Rank Fusion (RRF).
+
+    Args:
+        rankings: Multiple ranked result lists.
+        top_k: Number of final results to return.
+        k: RRF smoothing constant.
+
+    Returns:
+        Deduplicated and fused ranked results.
     """
 
     if top_k <= 0:
@@ -25,16 +41,13 @@ def reciprocal_rank_fusion(
     if k <= 0:
         raise ValueError("k must be greater than zero.")
 
-    fused_results = {}
+    fused_results: dict[str, dict[str, Any]] = {}
 
     for ranking in rankings:
-
         for rank, result in enumerate(ranking, start=1):
-
             document_id = result["id"]
 
             if document_id not in fused_results:
-
                 fused_results[document_id] = {
                     **result,
                     "rrf_score": 0.0,
@@ -54,12 +67,32 @@ def reciprocal_rank_fusion(
     return results[:top_k]
 
 
-class HybridSearch:
+# --------------------------------------------------
+# HYBRID SEARCH
+# --------------------------------------------------
 
-    def __init__(self):
+class HybridSearch:
+    """
+    Combines semantic and keyword retrieval using
+    Reciprocal Rank Fusion.
+    """
+
+    def __init__(self, rrf_k: int = RRF_K):
+        """
+        Initialize the hybrid search service.
+
+        Args:
+            rrf_k: RRF smoothing constant.
+        """
+
+        if rrf_k <= 0:
+            raise ValueError(
+                "rrf_k must be greater than zero."
+            )
 
         self.vector_store = vector_store
         self.keyword_search = keyword_search
+        self.rrf_k = rrf_k
 
     def search(
         self,
@@ -67,7 +100,15 @@ class HybridSearch:
         top_k: int = 5,
     ) -> list[dict[str, Any]]:
         """
-        Combine semantic and keyword search results.
+        Retrieve an expanded candidate pool from semantic
+        and keyword search, then combine rankings using RRF.
+
+        Args:
+            query: User's search query.
+            top_k: Number of final results to return.
+
+        Returns:
+            Fused and ranked search results.
         """
 
         if not query or not query.strip():
@@ -78,12 +119,16 @@ class HybridSearch:
                 "top_k must be greater than zero."
             )
 
-        # Retrieve semantic search results.
+        # Expand candidate pool before reranking.
+        candidate_k = top_k * CANDIDATE_MULTIPLIER
+
+        # Generate query embedding.
         query_embedding = generate_embedding(query)
 
+        # Retrieve expanded semantic search results.
         semantic_results = self.vector_store.search(
             query_embedding=query_embedding,
-            n_results=top_k,
+            n_results=candidate_k,
         )
 
         semantic_ranking = []
@@ -99,7 +144,6 @@ class HybridSearch:
             metadatas,
             distances,
         ):
-
             semantic_ranking.append({
                 "id": document_id,
                 "document": document,
@@ -107,24 +151,25 @@ class HybridSearch:
                 "distance": float(distance),
             })
 
-        # Retrieve keyword search results.
+        # Retrieve expanded keyword search results.
         keyword_ranking = self.keyword_search.search(
             query=query,
-            top_k=top_k,
+            top_k=candidate_k,
         )
 
-        # Combine both rankings.
+        # Combine both rankings using configurable RRF.
         return reciprocal_rank_fusion(
             rankings=[
                 semantic_ranking,
                 keyword_ranking,
             ],
             top_k=top_k,
+            k=self.rrf_k,
         )
 
 
 # --------------------------------------------------
-# HYBRID SEARCH INSTANCE
+# DEFAULT HYBRID SEARCH INSTANCE
 # --------------------------------------------------
 
 hybrid_search = HybridSearch()

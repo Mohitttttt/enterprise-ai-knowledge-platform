@@ -13,6 +13,10 @@ class VectorStore:
 
     def __init__(self):
 
+        # Tracks changes to the vector database.
+        # Used by KeywordSearch to invalidate its cached BM25 index.
+        self._version = 0
+
         self.client = chromadb.PersistentClient(
             path=str(VECTOR_DB_DIR)
         )
@@ -24,6 +28,16 @@ class VectorStore:
                 "hnsw:space": "cosine",
             },
         )
+
+    @property
+    def version(self) -> int:
+        """
+        Return the current vector-store version.
+
+        The version increments whenever documents are successfully
+        inserted, updated, or deleted through this instance.
+        """
+        return self._version
 
     # --------------------------------------------------
     # ADD DOCUMENTS
@@ -54,6 +68,9 @@ class VectorStore:
             documents=documents,
             metadatas=metadatas,
         )
+
+        # Increment only after a successful upsert.
+        self._version += 1
 
     # --------------------------------------------------
     # SEARCH DOCUMENTS
@@ -185,6 +202,9 @@ class VectorStore:
 
         self.collection.delete(ids=ids)
 
+        # Increment only after a successful deletion.
+        self._version += 1
+
         return len(ids)
 
     # --------------------------------------------------
@@ -198,7 +218,7 @@ class VectorStore:
         """
 
         if not sha256:
-            raise ValueError("SHA-256 hash cannot be empty.") 
+            raise ValueError("SHA-256 hash cannot be empty.")
 
         records = self.collection.get(
             where={"sha256": sha256},

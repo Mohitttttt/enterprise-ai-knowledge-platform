@@ -1,0 +1,1080 @@
+{
+    "dataset": "retrieval_questions_v3.json",
+    "evaluation_questions": 50,
+    "top_k": 5,
+    "rrf_k": 40,
+    "metrics": {
+        "mean_precision_at_k": 0.276,
+        "mean_recall_at_k": 0.98,
+        "mean_reciprocal_rank": 0.8857,
+        "mean_ndcg_at_k": 0.8914,
+        "mean_duplicate_rate": 0.0
+    },
+    "category_metrics": {
+        "hr_policy": {
+            "question_count": 4,
+            "mean_precision_at_k": 0.4,
+            "mean_recall_at_k": 1.0,
+            "mean_reciprocal_rank": 1.0,
+            "mean_ndcg_at_k": 1.0,
+            "mean_duplicate_rate": 0.0
+        },
+        "it_support": {
+            "question_count": 10,
+            "mean_precision_at_k": 0.32,
+            "mean_recall_at_k": 1.0,
+            "mean_reciprocal_rank": 0.8533,
+            "mean_ndcg_at_k": 0.865,
+            "mean_duplicate_rate": 0.0
+        },
+        "information_security": {
+            "question_count": 10,
+            "mean_precision_at_k": 0.26,
+            "mean_recall_at_k": 0.9667,
+            "mean_reciprocal_rank": 0.95,
+            "mean_ndcg_at_k": 0.9355,
+            "mean_duplicate_rate": 0.0
+        },
+        "remote_work": {
+            "question_count": 6,
+            "mean_precision_at_k": 0.2,
+            "mean_recall_at_k": 1.0,
+            "mean_reciprocal_rank": 0.75,
+            "mean_ndcg_at_k": 0.8155,
+            "mean_duplicate_rate": 0.0
+        },
+        "employee_benefits": {
+            "question_count": 8,
+            "mean_precision_at_k": 0.2,
+            "mean_recall_at_k": 1.0,
+            "mean_reciprocal_rank": 1.0,
+            "mean_ndcg_at_k": 1.0,
+            "mean_duplicate_rate": 0.0
+        },
+        "expense_reimbursement": {
+            "question_count": 8,
+            "mean_precision_at_k": 0.25,
+            "mean_recall_at_k": 1.0,
+            "mean_reciprocal_rank": 0.875,
+            "mean_ndcg_at_k": 0.9077,
+            "mean_duplicate_rate": 0.0
+        },
+        "cross_domain": {
+            "question_count": 4,
+            "mean_precision_at_k": 0.4,
+            "mean_recall_at_k": 0.8333,
+            "mean_reciprocal_rank": 0.6875,
+            "mean_ndcg_at_k": 0.6031,
+            "mean_duplicate_rate": 0.0
+        }
+    },
+    "latency": {
+        "first_measured_query_latency_ms": 1484.7,
+        "mean_subsequent_query_latency_ms": 14.36,
+        "mean_latency_ms": 43.77,
+        "query_count": 50
+    },
+    "results": [
+        {
+            "question_id": "Q001",
+            "question": "How many days of paid annual leave do employees receive?",
+            "category": "hr_policy",
+            "retrieved_count": 5,
+            "relevant_count": 2,
+            "precision_at_k": 0.4,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 1484.7,
+            "retrieved_chunk_ids": [
+                "0e3cde059d304bebaf5d508506d4eed6_0",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_0",
+                "803599ca55bf4275aa628fe32e9af586_0",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_3",
+                "803599ca55bf4275aa628fe32e9af586_1"
+            ]
+        },
+        {
+            "question_id": "Q002",
+            "question": "How can employees reset their passwords?",
+            "category": "it_support",
+            "retrieved_count": 5,
+            "relevant_count": 4,
+            "precision_at_k": 0.8,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 18.71,
+            "retrieved_chunk_ids": [
+                "a51c3b3a1ccb4532b557d3c3b8249e94_1",
+                "0e3cde059d304bebaf5d508506d4eed6_0",
+                "0e3cde059d304bebaf5d508506d4eed6_1",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_0",
+                "aba87e3130e840249f7ff783478d1ea0_0"
+            ]
+        },
+        {
+            "question_id": "Q003",
+            "question": "Who must approve annual leave requests?",
+            "category": "hr_policy",
+            "retrieved_count": 5,
+            "relevant_count": 2,
+            "precision_at_k": 0.4,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 17.98,
+            "retrieved_chunk_ids": [
+                "a51c3b3a1ccb4532b557d3c3b8249e94_0",
+                "0e3cde059d304bebaf5d508506d4eed6_0",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_3",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_2",
+                "db45592074cf4b58b8dcf9eec8932411_0"
+            ]
+        },
+        {
+            "question_id": "Q004",
+            "question": "What should employees do if they cannot access the employee portal?",
+            "category": "it_support",
+            "retrieved_count": 5,
+            "relevant_count": 3,
+            "precision_at_k": 0.6,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 0.8452,
+            "duplicate_rate": 0.0,
+            "latency_ms": 17.4,
+            "retrieved_chunk_ids": [
+                "0e3cde059d304bebaf5d508506d4eed6_1",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_1",
+                "0e3cde059d304bebaf5d508506d4eed6_0",
+                "9f90a304a4cf4c50ba216a060de9c525_1",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_2"
+            ]
+        },
+        {
+            "question_id": "Q005",
+            "question": "What are the company's standard working hours?",
+            "category": "hr_policy",
+            "retrieved_count": 5,
+            "relevant_count": 2,
+            "precision_at_k": 0.4,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 19.38,
+            "retrieved_chunk_ids": [
+                "0e3cde059d304bebaf5d508506d4eed6_1",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_1",
+                "db45592074cf4b58b8dcf9eec8932411_2",
+                "db45592074cf4b58b8dcf9eec8932411_1",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_0"
+            ]
+        },
+        {
+            "question_id": "Q006",
+            "question": "What should employees do when they are unable to work because of illness?",
+            "category": "hr_policy",
+            "retrieved_count": 5,
+            "relevant_count": 2,
+            "precision_at_k": 0.4,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 17.46,
+            "retrieved_chunk_ids": [
+                "0e3cde059d304bebaf5d508506d4eed6_0",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_0",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_1",
+                "9f90a304a4cf4c50ba216a060de9c525_2",
+                "0e3cde059d304bebaf5d508506d4eed6_1"
+            ]
+        },
+        {
+            "question_id": "Q007",
+            "question": "Are employees allowed to share their company passwords with colleagues?",
+            "category": "information_security",
+            "retrieved_count": 5,
+            "relevant_count": 3,
+            "precision_at_k": 0.6,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 0.906,
+            "duplicate_rate": 0.0,
+            "latency_ms": 12.7,
+            "retrieved_chunk_ids": [
+                "a51c3b3a1ccb4532b557d3c3b8249e94_1",
+                "aba87e3130e840249f7ff783478d1ea0_1",
+                "0e3cde059d304bebaf5d508506d4eed6_1",
+                "aba87e3130e840249f7ff783478d1ea0_0",
+                "0e3cde059d304bebaf5d508506d4eed6_0"
+            ]
+        },
+        {
+            "question_id": "Q008",
+            "question": "Who should an employee contact after their company account becomes locked?",
+            "category": "it_support",
+            "retrieved_count": 5,
+            "relevant_count": 2,
+            "precision_at_k": 0.4,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 0.9177,
+            "duplicate_rate": 0.0,
+            "latency_ms": 11.58,
+            "retrieved_chunk_ids": [
+                "9f90a304a4cf4c50ba216a060de9c525_0",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_1",
+                "0e3cde059d304bebaf5d508506d4eed6_1",
+                "9f90a304a4cf4c50ba216a060de9c525_1",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_2"
+            ]
+        },
+        {
+            "question_id": "Q009",
+            "question": "What verification is required before a locked employee account can be restored?",
+            "category": "it_support",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 11.48,
+            "retrieved_chunk_ids": [
+                "9f90a304a4cf4c50ba216a060de9c525_0",
+                "9f90a304a4cf4c50ba216a060de9c525_1",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_1",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_2",
+                "0e3cde059d304bebaf5d508506d4eed6_0"
+            ]
+        },
+        {
+            "question_id": "Q010",
+            "question": "What information must employees provide when reporting a locked company account?",
+            "category": "it_support",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 0.3333,
+            "ndcg_at_k": 0.5,
+            "duplicate_rate": 0.0,
+            "latency_ms": 11.7,
+            "retrieved_chunk_ids": [
+                "aba87e3130e840249f7ff783478d1ea0_2",
+                "9f90a304a4cf4c50ba216a060de9c525_1",
+                "9f90a304a4cf4c50ba216a060de9c525_0",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_1",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_2"
+            ]
+        },
+        {
+            "question_id": "Q011",
+            "question": "How should employees request installation of new software on company devices?",
+            "category": "it_support",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 11.6,
+            "retrieved_chunk_ids": [
+                "9f90a304a4cf4c50ba216a060de9c525_1",
+                "db45592074cf4b58b8dcf9eec8932411_1",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_2",
+                "aba87e3130e840249f7ff783478d1ea0_2",
+                "9f90a304a4cf4c50ba216a060de9c525_2"
+            ]
+        },
+        {
+            "question_id": "Q012",
+            "question": "Which details must be included in a software installation request?",
+            "category": "it_support",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 11.38,
+            "retrieved_chunk_ids": [
+                "9f90a304a4cf4c50ba216a060de9c525_1",
+                "db45592074cf4b58b8dcf9eec8932411_1",
+                "aba87e3130e840249f7ff783478d1ea0_1",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_2",
+                "9f90a304a4cf4c50ba216a060de9c525_0"
+            ]
+        },
+        {
+            "question_id": "Q013",
+            "question": "What should employees do if their company laptop or monitor stops working?",
+            "category": "it_support",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 0.2,
+            "ndcg_at_k": 0.3869,
+            "duplicate_rate": 0.0,
+            "latency_ms": 11.61,
+            "retrieved_chunk_ids": [
+                "db45592074cf4b58b8dcf9eec8932411_1",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_1",
+                "0e3cde059d304bebaf5d508506d4eed6_1",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_2",
+                "9f90a304a4cf4c50ba216a060de9c525_1"
+            ]
+        },
+        {
+            "question_id": "Q014",
+            "question": "Within what time does IT Support aim to acknowledge standard support requests?",
+            "category": "it_support",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 13.59,
+            "retrieved_chunk_ids": [
+                "9f90a304a4cf4c50ba216a060de9c525_2",
+                "0e3cde059d304bebaf5d508506d4eed6_1",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_2",
+                "db45592074cf4b58b8dcf9eec8932411_1",
+                "db45592074cf4b58b8dcf9eec8932411_0"
+            ]
+        },
+        {
+            "question_id": "Q015",
+            "question": "How are critical IT incidents affecting multiple employees prioritised?",
+            "category": "it_support",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 12.88,
+            "retrieved_chunk_ids": [
+                "9f90a304a4cf4c50ba216a060de9c525_2",
+                "aba87e3130e840249f7ff783478d1ea0_2",
+                "9f90a304a4cf4c50ba216a060de9c525_0",
+                "db45592074cf4b58b8dcf9eec8932411_1",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_2"
+            ]
+        },
+        {
+            "question_id": "Q016",
+            "question": "Under what conditions can employees request remote work?",
+            "category": "remote_work",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 11.46,
+            "retrieved_chunk_ids": [
+                "db45592074cf4b58b8dcf9eec8932411_0",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_2",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_1",
+                "db45592074cf4b58b8dcf9eec8932411_1",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_0"
+            ]
+        },
+        {
+            "question_id": "Q017",
+            "question": "Is manager approval required before an employee starts working remotely?",
+            "category": "remote_work",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 13.25,
+            "retrieved_chunk_ids": [
+                "db45592074cf4b58b8dcf9eec8932411_0",
+                "db45592074cf4b58b8dcf9eec8932411_1",
+                "5ade7178d54647fe963251e145a1a88b_1",
+                "db45592074cf4b58b8dcf9eec8932411_2",
+                "5ade7178d54647fe963251e145a1a88b_0"
+            ]
+        },
+        {
+            "question_id": "Q018",
+            "question": "How can remote employees obtain company-approved equipment?",
+            "category": "remote_work",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 0.5,
+            "ndcg_at_k": 0.6309,
+            "duplicate_rate": 0.0,
+            "latency_ms": 13.08,
+            "retrieved_chunk_ids": [
+                "db45592074cf4b58b8dcf9eec8932411_0",
+                "db45592074cf4b58b8dcf9eec8932411_1",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_2",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_1",
+                "9f90a304a4cf4c50ba216a060de9c525_1"
+            ]
+        },
+        {
+            "question_id": "Q019",
+            "question": "When must remote employees remain available for work?",
+            "category": "remote_work",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 0.5,
+            "ndcg_at_k": 0.6309,
+            "duplicate_rate": 0.0,
+            "latency_ms": 11.09,
+            "retrieved_chunk_ids": [
+                "db45592074cf4b58b8dcf9eec8932411_0",
+                "db45592074cf4b58b8dcf9eec8932411_1",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_2",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_1",
+                "db45592074cf4b58b8dcf9eec8932411_2"
+            ]
+        },
+        {
+            "question_id": "Q020",
+            "question": "Can employees use public or unsecured networks to access sensitive company systems while working remotely?",
+            "category": "remote_work",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 12.52,
+            "retrieved_chunk_ids": [
+                "db45592074cf4b58b8dcf9eec8932411_2",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_2",
+                "db45592074cf4b58b8dcf9eec8932411_1",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_1",
+                "aba87e3130e840249f7ff783478d1ea0_1"
+            ]
+        },
+        {
+            "question_id": "Q021",
+            "question": "Does the company guarantee every employee the right to work remotely?",
+            "category": "remote_work",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 0.5,
+            "ndcg_at_k": 0.6309,
+            "duplicate_rate": 0.0,
+            "latency_ms": 12.88,
+            "retrieved_chunk_ids": [
+                "a51c3b3a1ccb4532b557d3c3b8249e94_2",
+                "db45592074cf4b58b8dcf9eec8932411_0",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_1",
+                "db45592074cf4b58b8dcf9eec8932411_1",
+                "db45592074cf4b58b8dcf9eec8932411_2"
+            ]
+        },
+        {
+            "question_id": "Q022",
+            "question": "What is the annual professional development budget for an eligible employee?",
+            "category": "employee_benefits",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 13.98,
+            "retrieved_chunk_ids": [
+                "803599ca55bf4275aa628fe32e9af586_0",
+                "0e3cde059d304bebaf5d508506d4eed6_0",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_0",
+                "5ade7178d54647fe963251e145a1a88b_0",
+                "803599ca55bf4275aa628fe32e9af586_1"
+            ]
+        },
+        {
+            "question_id": "Q023",
+            "question": "Can unused professional development funds be carried over to the next year?",
+            "category": "employee_benefits",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 13.07,
+            "retrieved_chunk_ids": [
+                "803599ca55bf4275aa628fe32e9af586_0",
+                "803599ca55bf4275aa628fe32e9af586_1",
+                "0e3cde059d304bebaf5d508506d4eed6_0",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_0",
+                "5ade7178d54647fe963251e145a1a88b_1"
+            ]
+        },
+        {
+            "question_id": "Q024",
+            "question": "How much is the monthly public transport allowance?",
+            "category": "employee_benefits",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 13.58,
+            "retrieved_chunk_ids": [
+                "803599ca55bf4275aa628fe32e9af586_1",
+                "803599ca55bf4275aa628fe32e9af586_0",
+                "5ade7178d54647fe963251e145a1a88b_0",
+                "5ade7178d54647fe963251e145a1a88b_1",
+                "0e3cde059d304bebaf5d508506d4eed6_0"
+            ]
+        },
+        {
+            "question_id": "Q025",
+            "question": "Where must employees submit proof of their public transport purchase?",
+            "category": "employee_benefits",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 13.29,
+            "retrieved_chunk_ids": [
+                "803599ca55bf4275aa628fe32e9af586_1",
+                "5ade7178d54647fe963251e145a1a88b_1",
+                "9f90a304a4cf4c50ba216a060de9c525_1",
+                "803599ca55bf4275aa628fe32e9af586_0",
+                "db45592074cf4b58b8dcf9eec8932411_2"
+            ]
+        },
+        {
+            "question_id": "Q026",
+            "question": "Who can explain company health insurance benefits and eligibility?",
+            "category": "employee_benefits",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 13.87,
+            "retrieved_chunk_ids": [
+                "803599ca55bf4275aa628fe32e9af586_1",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_0",
+                "803599ca55bf4275aa628fe32e9af586_0",
+                "0e3cde059d304bebaf5d508506d4eed6_0",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_2"
+            ]
+        },
+        {
+            "question_id": "Q027",
+            "question": "When must professional training reimbursement be approved?",
+            "category": "employee_benefits",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 15.75,
+            "retrieved_chunk_ids": [
+                "803599ca55bf4275aa628fe32e9af586_0",
+                "803599ca55bf4275aa628fe32e9af586_1",
+                "5ade7178d54647fe963251e145a1a88b_2",
+                "5ade7178d54647fe963251e145a1a88b_0",
+                "5ade7178d54647fe963251e145a1a88b_1"
+            ]
+        },
+        {
+            "question_id": "Q028",
+            "question": "Which authentication method must employees enable for supported company accounts?",
+            "category": "information_security",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 12.98,
+            "retrieved_chunk_ids": [
+                "aba87e3130e840249f7ff783478d1ea0_0",
+                "9f90a304a4cf4c50ba216a060de9c525_0",
+                "9f90a304a4cf4c50ba216a060de9c525_1",
+                "aba87e3130e840249f7ff783478d1ea0_1",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_2"
+            ]
+        },
+        {
+            "question_id": "Q029",
+            "question": "Are employees permitted to share their multi-factor authentication codes?",
+            "category": "information_security",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 13.26,
+            "retrieved_chunk_ids": [
+                "aba87e3130e840249f7ff783478d1ea0_0",
+                "0e3cde059d304bebaf5d508506d4eed6_1",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_1",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_0",
+                "0e3cde059d304bebaf5d508506d4eed6_0"
+            ]
+        },
+        {
+            "question_id": "Q030",
+            "question": "How should employees respond to suspicious phishing emails?",
+            "category": "information_security",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 13.28,
+            "retrieved_chunk_ids": [
+                "aba87e3130e840249f7ff783478d1ea0_1",
+                "aba87e3130e840249f7ff783478d1ea0_0",
+                "aba87e3130e840249f7ff783478d1ea0_2",
+                "9f90a304a4cf4c50ba216a060de9c525_1",
+                "db45592074cf4b58b8dcf9eec8932411_2"
+            ]
+        },
+        {
+            "question_id": "Q031",
+            "question": "Can confidential company information be stored in personal cloud accounts?",
+            "category": "information_security",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 0.5,
+            "ndcg_at_k": 0.6309,
+            "duplicate_rate": 0.0,
+            "latency_ms": 13.19,
+            "retrieved_chunk_ids": [
+                "aba87e3130e840249f7ff783478d1ea0_2",
+                "aba87e3130e840249f7ff783478d1ea0_1",
+                "db45592074cf4b58b8dcf9eec8932411_2",
+                "aba87e3130e840249f7ff783478d1ea0_0",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_2"
+            ]
+        },
+        {
+            "question_id": "Q032",
+            "question": "What information should employees provide when reporting a lost company device?",
+            "category": "information_security",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 12.72,
+            "retrieved_chunk_ids": [
+                "aba87e3130e840249f7ff783478d1ea0_2",
+                "9f90a304a4cf4c50ba216a060de9c525_1",
+                "9f90a304a4cf4c50ba216a060de9c525_2",
+                "aba87e3130e840249f7ff783478d1ea0_1",
+                "db45592074cf4b58b8dcf9eec8932411_1"
+            ]
+        },
+        {
+            "question_id": "Q033",
+            "question": "Who must be notified about suspected unauthorised access to company information?",
+            "category": "information_security",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 14.9,
+            "retrieved_chunk_ids": [
+                "aba87e3130e840249f7ff783478d1ea0_2",
+                "aba87e3130e840249f7ff783478d1ea0_1",
+                "db45592074cf4b58b8dcf9eec8932411_2",
+                "9f90a304a4cf4c50ba216a060de9c525_1",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_2"
+            ]
+        },
+        {
+            "question_id": "Q034",
+            "question": "Which types of expenses can employees request reimbursement for?",
+            "category": "expense_reimbursement",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 16.6,
+            "retrieved_chunk_ids": [
+                "5ade7178d54647fe963251e145a1a88b_0",
+                "5ade7178d54647fe963251e145a1a88b_1",
+                "5ade7178d54647fe963251e145a1a88b_2",
+                "803599ca55bf4275aa628fe32e9af586_0",
+                "0e3cde059d304bebaf5d508506d4eed6_0"
+            ]
+        },
+        {
+            "question_id": "Q035",
+            "question": "When must business travel and accommodation expenses receive approval?",
+            "category": "expense_reimbursement",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 14.43,
+            "retrieved_chunk_ids": [
+                "5ade7178d54647fe963251e145a1a88b_0",
+                "5ade7178d54647fe963251e145a1a88b_1",
+                "5ade7178d54647fe963251e145a1a88b_2",
+                "db45592074cf4b58b8dcf9eec8932411_0",
+                "0e3cde059d304bebaf5d508506d4eed6_0"
+            ]
+        },
+        {
+            "question_id": "Q036",
+            "question": "What documents and information must accompany an employee expense claim?",
+            "category": "expense_reimbursement",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 13.32,
+            "retrieved_chunk_ids": [
+                "5ade7178d54647fe963251e145a1a88b_1",
+                "5ade7178d54647fe963251e145a1a88b_0",
+                "5ade7178d54647fe963251e145a1a88b_2",
+                "9f90a304a4cf4c50ba216a060de9c525_1",
+                "803599ca55bf4275aa628fe32e9af586_1"
+            ]
+        },
+        {
+            "question_id": "Q037",
+            "question": "How long do employees have to submit an expense reimbursement claim?",
+            "category": "expense_reimbursement",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 0.5,
+            "ndcg_at_k": 0.6309,
+            "duplicate_rate": 0.0,
+            "latency_ms": 14.92,
+            "retrieved_chunk_ids": [
+                "5ade7178d54647fe963251e145a1a88b_2",
+                "5ade7178d54647fe963251e145a1a88b_1",
+                "5ade7178d54647fe963251e145a1a88b_0",
+                "803599ca55bf4275aa628fe32e9af586_1",
+                "803599ca55bf4275aa628fe32e9af586_0"
+            ]
+        },
+        {
+            "question_id": "Q038",
+            "question": "How many business days does reimbursement normally take after complete documentation is received?",
+            "category": "expense_reimbursement",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 14.34,
+            "retrieved_chunk_ids": [
+                "5ade7178d54647fe963251e145a1a88b_2",
+                "5ade7178d54647fe963251e145a1a88b_1",
+                "5ade7178d54647fe963251e145a1a88b_0",
+                "803599ca55bf4275aa628fe32e9af586_0",
+                "0e3cde059d304bebaf5d508506d4eed6_0"
+            ]
+        },
+        {
+            "question_id": "Q039",
+            "question": "Are personal purchases eligible for company expense reimbursement?",
+            "category": "expense_reimbursement",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 0.5,
+            "ndcg_at_k": 0.6309,
+            "duplicate_rate": 0.0,
+            "latency_ms": 14.63,
+            "retrieved_chunk_ids": [
+                "5ade7178d54647fe963251e145a1a88b_0",
+                "5ade7178d54647fe963251e145a1a88b_2",
+                "5ade7178d54647fe963251e145a1a88b_1",
+                "803599ca55bf4275aa628fe32e9af586_0",
+                "803599ca55bf4275aa628fe32e9af586_1"
+            ]
+        },
+        {
+            "question_id": "Q040",
+            "question": "If my company laptop breaks while working remotely, whom should I contact and what happens next?",
+            "category": "cross_domain",
+            "retrieved_count": 5,
+            "relevant_count": 3,
+            "precision_at_k": 0.4,
+            "recall_at_k": 0.6667,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 0.4419,
+            "duplicate_rate": 0.0,
+            "latency_ms": 14.18,
+            "retrieved_chunk_ids": [
+                "db45592074cf4b58b8dcf9eec8932411_1",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_2",
+                "db45592074cf4b58b8dcf9eec8932411_2",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_1",
+                "9f90a304a4cf4c50ba216a060de9c525_2"
+            ]
+        },
+        {
+            "question_id": "Q041",
+            "question": "I received a suspicious email while working from home. What should I do?",
+            "category": "information_security",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 14.28,
+            "retrieved_chunk_ids": [
+                "aba87e3130e840249f7ff783478d1ea0_1",
+                "db45592074cf4b58b8dcf9eec8932411_1",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_2",
+                "9f90a304a4cf4c50ba216a060de9c525_0",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_1"
+            ]
+        },
+        {
+            "question_id": "Q042",
+            "question": "If my employee portal is inaccessible and my account is locked, which team should I contact?",
+            "category": "cross_domain",
+            "retrieved_count": 5,
+            "relevant_count": 3,
+            "precision_at_k": 0.6,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 0.5,
+            "ndcg_at_k": 0.6561,
+            "duplicate_rate": 0.0,
+            "latency_ms": 16.33,
+            "retrieved_chunk_ids": [
+                "0e3cde059d304bebaf5d508506d4eed6_1",
+                "9f90a304a4cf4c50ba216a060de9c525_0",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_1",
+                "0e3cde059d304bebaf5d508506d4eed6_0",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_2"
+            ]
+        },
+        {
+            "question_id": "Q043",
+            "question": "What is the deadline for submitting an expense claim and how long does reimbursement normally take?",
+            "category": "expense_reimbursement",
+            "retrieved_count": 5,
+            "relevant_count": 2,
+            "precision_at_k": 0.4,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 16.83,
+            "retrieved_chunk_ids": [
+                "5ade7178d54647fe963251e145a1a88b_2",
+                "5ade7178d54647fe963251e145a1a88b_1",
+                "5ade7178d54647fe963251e145a1a88b_0",
+                "803599ca55bf4275aa628fe32e9af586_0",
+                "0e3cde059d304bebaf5d508506d4eed6_1"
+            ]
+        },
+        {
+            "question_id": "Q044",
+            "question": "What approval and supporting documentation are required for business travel expense reimbursement?",
+            "category": "expense_reimbursement",
+            "retrieved_count": 5,
+            "relevant_count": 2,
+            "precision_at_k": 0.4,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 17.3,
+            "retrieved_chunk_ids": [
+                "5ade7178d54647fe963251e145a1a88b_0",
+                "5ade7178d54647fe963251e145a1a88b_1",
+                "5ade7178d54647fe963251e145a1a88b_2",
+                "803599ca55bf4275aa628fe32e9af586_0",
+                "db45592074cf4b58b8dcf9eec8932411_0"
+            ]
+        },
+        {
+            "question_id": "Q045",
+            "question": "How can employees get professional training reimbursed, and what is the annual budget limit?",
+            "category": "employee_benefits",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 13.72,
+            "retrieved_chunk_ids": [
+                "803599ca55bf4275aa628fe32e9af586_0",
+                "803599ca55bf4275aa628fe32e9af586_1",
+                "0e3cde059d304bebaf5d508506d4eed6_0",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_0",
+                "5ade7178d54647fe963251e145a1a88b_1"
+            ]
+        },
+        {
+            "question_id": "Q046",
+            "question": "What equipment and information-security requirements apply to employees working remotely?",
+            "category": "cross_domain",
+            "retrieved_count": 5,
+            "relevant_count": 3,
+            "precision_at_k": 0.4,
+            "recall_at_k": 0.6667,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 0.8839,
+            "duplicate_rate": 0.0,
+            "latency_ms": 15.31,
+            "retrieved_chunk_ids": [
+                "db45592074cf4b58b8dcf9eec8932411_1",
+                "db45592074cf4b58b8dcf9eec8932411_2",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_2",
+                "db45592074cf4b58b8dcf9eec8932411_0",
+                "9f90a304a4cf4c50ba216a060de9c525_1"
+            ]
+        },
+        {
+            "question_id": "Q047",
+            "question": "What should an employee do after discovering that their company laptop has been lost or stolen?",
+            "category": "information_security",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 14.98,
+            "retrieved_chunk_ids": [
+                "aba87e3130e840249f7ff783478d1ea0_2",
+                "aba87e3130e840249f7ff783478d1ea0_1",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_1",
+                "0e3cde059d304bebaf5d508506d4eed6_1",
+                "9f90a304a4cf4c50ba216a060de9c525_1"
+            ]
+        },
+        {
+            "question_id": "Q048",
+            "question": "When reporting an IT support issue, what should an employee include in the request?",
+            "category": "cross_domain",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 0.25,
+            "ndcg_at_k": 0.4307,
+            "duplicate_rate": 0.0,
+            "latency_ms": 15.69,
+            "retrieved_chunk_ids": [
+                "9f90a304a4cf4c50ba216a060de9c525_2",
+                "9f90a304a4cf4c50ba216a060de9c525_1",
+                "db45592074cf4b58b8dcf9eec8932411_1",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_2",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_1"
+            ]
+        },
+        {
+            "question_id": "Q049",
+            "question": "Which department handles health insurance benefit enquiries and receives proof of public transport purchases?",
+            "category": "employee_benefits",
+            "retrieved_count": 5,
+            "relevant_count": 1,
+            "precision_at_k": 0.2,
+            "recall_at_k": 1.0,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 1.0,
+            "duplicate_rate": 0.0,
+            "latency_ms": 15.02,
+            "retrieved_chunk_ids": [
+                "803599ca55bf4275aa628fe32e9af586_1",
+                "803599ca55bf4275aa628fe32e9af586_0",
+                "5ade7178d54647fe963251e145a1a88b_2",
+                "5ade7178d54647fe963251e145a1a88b_1",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_3"
+            ]
+        },
+        {
+            "question_id": "Q050",
+            "question": "What are the rules for keeping company account passwords and multi-factor authentication codes secure?",
+            "category": "information_security",
+            "retrieved_count": 5,
+            "relevant_count": 3,
+            "precision_at_k": 0.4,
+            "recall_at_k": 0.6667,
+            "reciprocal_rank": 1.0,
+            "ndcg_at_k": 0.8179,
+            "duplicate_rate": 0.0,
+            "latency_ms": 24.32,
+            "retrieved_chunk_ids": [
+                "aba87e3130e840249f7ff783478d1ea0_0",
+                "9f90a304a4cf4c50ba216a060de9c525_0",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_1",
+                "0e3cde059d304bebaf5d508506d4eed6_0",
+                "a51c3b3a1ccb4532b557d3c3b8249e94_2"
+            ]
+        }
+    ],
+    "generated_at": "2026-11-25T15:47:41.251651+00:00"
+}

@@ -42,3 +42,10 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Generated evaluation reports
+backend/evaluation/reports/evaluation_*.json
+!backend/evaluation/reports/v3_top5_rrf40.json
+
+# Evaluation dataset backups
+backend/evaluation/dataset/retrieval_questions_backup.json

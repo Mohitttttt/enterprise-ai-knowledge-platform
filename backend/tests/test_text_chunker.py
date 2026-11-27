@@ -173,3 +173,98 @@ def test_chunk_size_is_respected():
 
     for chunk in chunks:
         assert len(chunk["text"]) <= 200
+
+# --------------------------------------------------
+# TEST 10: Content Preservation
+# --------------------------------------------------
+
+def test_chunking_does_not_drop_document_words():
+
+    text = " ".join(
+        f"unique_word_{i}" for i in range(300)
+    )
+
+    chunks = chunk_text(
+        text,
+        chunk_size=200,
+        chunk_overlap=40,
+    )
+
+    source_words = set(text.split())
+
+    chunk_words = set(
+        word
+        for chunk in chunks
+        for word in chunk["text"].split()
+    )
+
+    assert source_words.issubset(chunk_words)
+
+
+# --------------------------------------------------
+# TEST 11: Character Offset Accuracy
+# --------------------------------------------------
+
+def test_chunk_character_offsets_match_normalized_text():
+
+    text = (
+        "First paragraph contains useful information.\n"
+        "\n"
+        "Second paragraph contains additional information.\n"
+        "\n"
+        "Third paragraph contains more useful information."
+    )
+
+    normalized_text = "\n".join(
+        " ".join(paragraph.split())
+        for paragraph in text.replace("\r\n", "\n").split("\n")
+        if paragraph.strip()
+    )
+
+    chunks = chunk_text(
+        text,
+        chunk_size=100,
+        chunk_overlap=20,
+    )
+
+    for chunk in chunks:
+
+        expected_text = normalized_text[
+            chunk["start_char"]:chunk["end_char"]
+        ].strip()
+
+        assert chunk["text"] == expected_text
+
+def test_numbered_headings_stay_with_their_content():
+    text = """
+    1. ANNUAL LEAVE
+
+    Employees receive 30 days of paid annual leave.
+    Requests must be approved by the manager.
+
+    2. SICK LEAVE
+
+    Employees must notify their manager when they are sick.
+    Medical certificates may be required.
+
+    3. IT SUPPORT
+
+    Employees must submit a support request.
+    IT Support will assess the issue and arrange repairs.
+    """
+
+    chunks = chunk_text(text, chunk_size=120, chunk_overlap=20)
+
+    combined_chunks = [chunk["text"] for chunk in chunks]
+
+    assert any(
+        "2. SICK LEAVE" in chunk
+        and "Employees must notify their manager" in chunk
+        for chunk in combined_chunks
+    )
+
+    assert any(
+        "3. IT SUPPORT" in chunk
+        and "Employees must submit a support request" in chunk
+        for chunk in combined_chunks
+    )

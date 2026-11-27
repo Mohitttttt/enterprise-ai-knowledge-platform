@@ -1,7 +1,11 @@
 import pytest
 
-from app.services.hybrid_search import reciprocal_rank_fusion
+import app.services.hybrid_search as hybrid_module
 
+from app.services.hybrid_search import (
+    HybridSearch,
+    reciprocal_rank_fusion,
+)
 
 # --------------------------------------------------
 # TEST 1: Combine Two Search Rankings
@@ -179,3 +183,115 @@ def test_rrf_score_calculation():
     assert results[0]["rrf_score"] == pytest.approx(
         expected_score
     )
+# --------------------------------------------------
+# TEST 9: Hybrid Search Expands Candidate Pool
+# --------------------------------------------------
+
+def test_hybrid_search_expands_candidate_pool(monkeypatch):
+
+    class FakeVectorStore:
+
+        def __init__(self):
+            self.requested_n_results = None
+
+        def search(self, query_embedding, n_results):
+
+            self.requested_n_results = n_results
+
+            return {
+                "ids": [[f"semantic_{i}" for i in range(n_results)]],
+                "documents": [
+                    [f"Semantic document {i}" for i in range(n_results)]
+                ],
+                "metadatas": [
+                    [{"source": "semantic"} for _ in range(n_results)]
+                ],
+                "distances": [[0.1 for _ in range(n_results)]],
+            }
+
+    class FakeKeywordSearch:
+
+        def __init__(self):
+            self.requested_top_k = None
+
+        def search(self, query, top_k):
+
+            self.requested_top_k = top_k
+
+            return [
+                {
+                    "id": f"keyword_{i}",
+                    "document": f"Keyword document {i}",
+                    "metadata": {"source": "keyword"},
+                    "score": 1.0,
+                }
+                for i in range(top_k)
+            ]
+
+    fake_vector_store = FakeVectorStore()
+    fake_keyword_search = FakeKeywordSearch()
+
+    service = HybridSearch()
+
+    service.vector_store = fake_vector_store
+    service.keyword_search = fake_keyword_search
+
+    monkeypatch.setattr(
+        hybrid_module,
+        "generate_embedding",
+        lambda query: [0.1, 0.2, 0.3],
+    )
+
+    service.search("annual leave", top_k=5)
+
+    expected_candidate_k = 15
+
+    assert fake_vector_store.requested_n_results == expected_candidate_k
+
+    assert fake_keyword_search.requested_top_k == expected_candidate_k
+
+
+# --------------------------------------------------
+# TEST 10: Hybrid Search Respects Final Top K
+# --------------------------------------------------
+
+def test_hybrid_search_respects_final_top_k(monkeypatch):
+
+    class FakeVectorStore:
+
+        def search(self, query_embedding, n_results):
+
+            return {
+                "ids": [[f"doc_{i}" for i in range(n_results)]],
+                "documents": [
+                    [f"Document {i}" for i in range(n_results)]
+                ],
+                "metadatas": [
+                    [{} for _ in range(n_results)]
+                ],
+                "distances": [[0.1 for _ in range(n_results)]],
+            }
+
+    class FakeKeywordSearch:
+
+        def search(self, query, top_k):
+
+            return []
+
+    service = HybridSearch()
+
+    service.vector_store = FakeVectorStore()
+    service.keyword_search = FakeKeywordSearch()
+
+    monkeypatch.setattr(
+        hybrid_module,
+        "generate_embedding",
+        lambda query: [0.1, 0.2, 0.3],
+    )
+
+    results = service.search(
+        "annual leave",
+        top_k=5,
+    )
+
+    assert len(results) == 5

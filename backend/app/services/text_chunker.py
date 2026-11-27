@@ -4,7 +4,24 @@ from typing import Any
 
 DEFAULT_CHUNK_SIZE = 500
 DEFAULT_CHUNK_OVERLAP = 100
-MIN_CHUNK_SIZE = 100
+
+
+def _is_numbered_heading(line: str) -> bool:
+    """
+    Identify numbered headings.
+
+    Examples:
+        1. ANNUAL LEAVE
+        2) SICK LEAVE
+        3.1 IT SUPPORT
+    """
+
+    return bool(
+        re.match(
+            r"^\s*\d+(?:\.\d+)*(?:[.)])?\s+\S",
+            line,
+        )
+    )
 
 
 def _find_best_boundary(
@@ -16,10 +33,11 @@ def _find_best_boundary(
     Find a natural text boundary near the target position.
 
     Priority:
-    1. Paragraph boundary
-    2. Sentence boundary
-    3. Word boundary
-    4. Exact target position
+    1. Line boundary, unless it separates a heading
+       from its associated content.
+    2. Sentence boundary.
+    3. Word boundary.
+    4. Exact target position.
     """
 
     if target_end >= len(text):
@@ -31,20 +49,42 @@ def _find_best_boundary(
 
     search_region = text[minimum_end:target_end]
 
-    # Prefer paragraph boundaries.
-    paragraph_matches = list(
+    # Prefer line boundaries, but never end a chunk
+    # immediately after a numbered heading.
+    line_matches = list(
         re.finditer(r"\n+", search_region)
     )
 
-    if paragraph_matches:
+    valid_line_matches = []
+
+    for match in line_matches:
+        boundary = minimum_end + match.start()
+
+        previous_line_start = (
+            text.rfind("\n", start, boundary) + 1
+        )
+
+        previous_line = text[
+            previous_line_start:boundary
+        ].strip()
+
+        if not _is_numbered_heading(previous_line):
+            valid_line_matches.append(match)
+
+    if valid_line_matches:
         return (
             minimum_end
-            + paragraph_matches[-1].end()
+            + valid_line_matches[-1].end()
         )
 
     # Prefer sentence boundaries.
+    # Avoid interpreting numbered headings such as
+    # "2. SICK LEAVE" as sentence endings.
     sentence_matches = list(
-        re.finditer(r'[.!?](?:["\']?)\s+', search_region)
+        re.finditer(
+            r"""(?<!\d)[.!?](?:["']?)\s+""",
+            search_region,
+        )
     )
 
     if sentence_matches:
@@ -74,7 +114,11 @@ def _find_overlap_start(
     """
     Calculate the next chunk's starting position.
 
-    Attempts to begin the overlap at a word boundary.
+    Attempts to start at a word boundary.
+
+    If the overlap begins inside a numbered heading,
+    move the starting position to the beginning
+    of that heading.
     """
 
     if chunk_overlap == 0:
@@ -85,6 +129,27 @@ def _find_overlap_start(
         chunk_end - chunk_overlap,
     )
 
+    line_start = (
+        text.rfind("\n", 0, next_start) + 1
+    )
+
+    line_end = text.find(
+        "\n",
+        next_start,
+    )
+
+    if line_end == -1:
+        line_end = len(text)
+
+    current_line = text[line_start:line_end]
+
+    if (
+        line_start < next_start
+        and _is_numbered_heading(current_line)
+    ):
+        return line_start
+
+    # Otherwise, start at the next word boundary.
     whitespace_position = text.find(
         " ",
         next_start,
@@ -105,7 +170,13 @@ def chunk_text(
     """
     Split document text into structure-aware overlapping chunks.
 
-    Attempts to preserve paragraphs, sentences and headings.
+    Preserves:
+    - Numbered headings where possible.
+    - Line and sentence boundaries.
+    - Word boundaries.
+    - Overlapping context between chunks.
+
+    Does not discard short intermediate chunks.
 
     Returns:
         A list of dictionaries containing:
@@ -130,22 +201,29 @@ def chunk_text(
             "and smaller than chunk size."
         )
 
-    # Normalize line endings while preserving paragraph structure.
-    text = text.replace("\r\n", "\n").replace("\r", "\n")
+    # Normalize line endings.
+    text = text.replace(
+        "\r\n",
+        "\n",
+    ).replace(
+        "\r",
+        "\n",
+    )
 
-    # Remove unnecessary spaces without removing paragraph boundaries.
-    paragraphs = [
-        " ".join(paragraph.split())
-        for paragraph in text.split("\n")
+    # Normalize individual lines while preserving
+    # meaningful line boundaries.
+    lines = [
+        " ".join(line.split())
+        for line in text.split("\n")
     ]
 
     text = "\n".join(
-        paragraph
-        for paragraph in paragraphs
-        if paragraph
+        line
+        for line in lines
+        if line
     )
 
-    if not text.strip():
+    if not text:
         return []
 
     chunks = []
@@ -166,7 +244,7 @@ def chunk_text(
             target_end=target_end,
         )
 
-        # Prevent invalid or excessively small chunks.
+        # Guarantee a valid boundary.
         if end <= start:
             end = min(
                 start + chunk_size,
@@ -175,11 +253,10 @@ def chunk_text(
 
         chunk = text[start:end].strip()
 
-        if chunk and (
-            len(chunk) >= MIN_CHUNK_SIZE
-            or not chunks
-            or end == len(text)
-        ):
+        # Never discard non-empty chunks.
+        # Small chunks can still contain important
+        # headings, definitions or policy statements.
+        if chunk:
             chunks.append({
                 "chunk_index": chunk_index,
                 "text": chunk,

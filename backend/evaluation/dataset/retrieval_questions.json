@@ -1,0 +1,93 @@
+﻿[
+  {
+    "id": "Q001",
+    "question": "How many days of paid annual leave do employees receive?",
+    "relevant_document_ids": [
+      "0e3cde059d304bebaf5d508506d4eed6",
+      "a51c3b3a1ccb4532b557d3c3b8249e94"
+    ],
+    "relevant_chunk_ids": [
+      "0e3cde059d304bebaf5d508506d4eed6_0",
+      "a51c3b3a1ccb4532b557d3c3b8249e94_0"
+    ],
+    "relevance_grades": {
+      "0e3cde059d304bebaf5d508506d4eed6_0": 3,
+      "a51c3b3a1ccb4532b557d3c3b8249e94_0": 3
+    },
+    "category": "hr_policy"
+  },
+  {
+    "id": "Q002",
+    "question": "How can employees reset their passwords?",
+    "relevant_document_ids": [
+      "0e3cde059d304bebaf5d508506d4eed6",
+      "a51c3b3a1ccb4532b557d3c3b8249e94"
+    ],
+    "relevant_chunk_ids": [
+      "0e3cde059d304bebaf5d508506d4eed6_0",
+      "0e3cde059d304bebaf5d508506d4eed6_1",
+      "a51c3b3a1ccb4532b557d3c3b8249e94_0",
+      "a51c3b3a1ccb4532b557d3c3b8249e94_1"
+    ],
+    "relevance_grades": {
+      "0e3cde059d304bebaf5d508506d4eed6_0": 3,
+      "0e3cde059d304bebaf5d508506d4eed6_1": 1,
+      "a51c3b3a1ccb4532b557d3c3b8249e94_0": 1,
+      "a51c3b3a1ccb4532b557d3c3b8249e94_1": 3
+    },
+    "category": "it_support"
+  },
+  {
+    "id": "Q003",
+    "question": "Who must approve annual leave requests?",
+    "relevant_document_ids": [
+      "0e3cde059d304bebaf5d508506d4eed6",
+      "a51c3b3a1ccb4532b557d3c3b8249e94"
+    ],
+    "relevant_chunk_ids": [
+      "0e3cde059d304bebaf5d508506d4eed6_0",
+      "a51c3b3a1ccb4532b557d3c3b8249e94_0"
+    ],
+    "relevance_grades": {
+      "0e3cde059d304bebaf5d508506d4eed6_0": 3,
+      "a51c3b3a1ccb4532b557d3c3b8249e94_0": 3
+    },
+    "category": "hr_policy"
+  },
+  {
+    "id": "Q004",
+    "question": "What should employees do if they cannot access the employee portal?",
+    "relevant_document_ids": [
+      "0e3cde059d304bebaf5d508506d4eed6",
+      "a51c3b3a1ccb4532b557d3c3b8249e94"
+    ],
+    "relevant_chunk_ids": [
+      "0e3cde059d304bebaf5d508506d4eed6_0",
+      "0e3cde059d304bebaf5d508506d4eed6_1",
+      "a51c3b3a1ccb4532b557d3c3b8249e94_1"
+    ],
+    "relevance_grades": {
+      "0e3cde059d304bebaf5d508506d4eed6_0": 3,
+      "0e3cde059d304bebaf5d508506d4eed6_1": 2,
+      "a51c3b3a1ccb4532b557d3c3b8249e94_1": 3
+    },
+    "category": "it_support"
+  },
+  {
+    "id": "Q005",
+    "question": "What are the company's standard working hours?",
+    "relevant_document_ids": [
+      "0e3cde059d304bebaf5d508506d4eed6",
+      "a51c3b3a1ccb4532b557d3c3b8249e94"
+    ],
+    "relevant_chunk_ids": [
+      "0e3cde059d304bebaf5d508506d4eed6_1",
+      "a51c3b3a1ccb4532b557d3c3b8249e94_1"
+    ],
+    "relevance_grades": {
+      "0e3cde059d304bebaf5d508506d4eed6_1": 3,
+      "a51c3b3a1ccb4532b557d3c3b8249e94_1": 3
+    },
+    "category": "hr_policy"
+  }
+]
