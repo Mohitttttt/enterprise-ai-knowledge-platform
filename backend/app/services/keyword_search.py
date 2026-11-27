@@ -1,10 +1,11 @@
-import re
+﻿import re
 import threading
 from typing import Any
 
 from rank_bm25 import BM25Okapi
 
 from app.services.vector_store import vector_store
+from app.services.query_expansion import expand_tokens
 
 
 def tokenize(text: str) -> list[str]:
@@ -27,9 +28,14 @@ def tokenize(text: str) -> list[str]:
 
 class KeywordSearch:
 
-    def __init__(self):
+    def __init__(
+        self,
+        store: Any | None = None,
+        enable_query_expansion: bool = False,
+    ):
 
-        self.store = vector_store
+        self.store = store if store is not None else vector_store
+        self.enable_query_expansion = enable_query_expansion
 
         # Cached BM25 index.
         self._bm25: BM25Okapi | None = None
@@ -162,6 +168,9 @@ class KeywordSearch:
 
         # Tokenize the search query.
         tokenized_query = tokenize(query)
+
+        if self.enable_query_expansion:
+            tokenized_query = expand_tokens(tokenized_query)
 
         if not tokenized_query:
             return []

@@ -60,7 +60,7 @@ def test_evaluate_retrieval_returns_expected_metrics(fake_dataset):
 
     metrics = report["metrics"]
 
-    assert metrics["mean_precision_at_k"] == 0.5833
+    assert metrics["mean_precision_at_k"] == 0.5
     assert metrics["mean_recall_at_k"] == 1.0
     assert metrics["mean_reciprocal_rank"] == 1.0
     assert metrics["mean_ndcg_at_k"] == 1.0

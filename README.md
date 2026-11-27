@@ -27,10 +27,12 @@ Users can upload documents, search their contents using natural language, and as
 
 ### Intelligent Retrieval
 - Semantic search using vector embeddings.
-- Keyword search using BM25.
-- Hybrid retrieval combining semantic and lexical results.
-- Reciprocal Rank Fusion (RRF) for combining rankings.
+- BM25 keyword retrieval.
+- Hybrid retrieval combining semantic and lexical rankings.
+- Reciprocal Rank Fusion (RRF) with configurable ranking parameters.
+- Controlled synonym expansion for BM25 keyword retrieval.
 - Context filtering to reduce irrelevant retrieved content.
+- Retrieval diagnostics for inspecting semantic, keyword, and fused rankings.
 
 ### Conversational RAG
 - Question answering using retrieved document context.
@@ -68,18 +70,20 @@ flowchart TD
     J --> K[Semantic Search]
     J --> L[BM25 Keyword Search]
 
-    K --> M[Hybrid Retrieval - RRF]
-    L --> M
+    L --> M[Controlled Synonym Expansion]
 
-    M --> N[Context Filtering]
-    N --> O[Context Builder]
-    O --> P[Answer Generation]
+    K --> N[Hybrid Retrieval - RRF]
+    M --> N
 
-    E --> Q[SQLite Conversation Storage]
-    Q --> J
+    N --> O[Context Filtering]
+    O --> P[Context Builder]
+    P --> Q[Answer Generation]
 
-    P --> R[Answer Validation]
-    R --> S[Response with Sources]
+    E --> R[SQLite Conversation Storage]
+    R --> J
+
+    Q --> S[Answer Validation]
+    S --> T[Response with Sources]
 ```
 
 ### Retrieval and Answer Generation Flow
@@ -91,10 +95,11 @@ flowchart TD
 5. ChromaDB stores the embeddings and associated metadata.
 6. A user submits a natural-language question.
 7. Semantic and BM25 keyword retrieval identify relevant passages.
-8. Reciprocal Rank Fusion combines the retrieval rankings.
-9. Context filtering selects relevant information.
-10. The answer service constructs a response using document context.
-11. Answer validation checks the response before returning it.
+8. Controlled synonym expansion improves keyword matching for selected terms.
+9. Reciprocal Rank Fusion combines the retrieval rankings.
+10. Context filtering selects relevant information.
+11. The answer service constructs a response using document context.
+12. Answer validation checks the response before returning it.
 
 ---
 
@@ -110,11 +115,60 @@ flowchart TD
 | Embedding Architecture | all-MiniLM-L6-v2 |
 | Keyword Retrieval | BM25 (rank-bm25) |
 | Hybrid Ranking | Reciprocal Rank Fusion |
+| Query Processing | Controlled synonym expansion |
 | Language Model Runtime | Ollama |
 | Language Model | Llama 3.2 1B |
 | Conversation Storage | SQLite |
 | Document Parsing | pypdf, python-docx |
 | Testing | pytest |
+
+---
+
+## Retrieval Evaluation and Experiments
+
+Retrieval quality is evaluated using a dedicated evaluation dataset and an isolated ChromaDB collection.
+
+The evaluation collection, `enterprise_evaluation`, is separated from the production collection, `enterprise_knowledge`.
+
+This separation allows retrieval experiments to run without modifying production knowledge records.
+
+### Evaluation Components
+
+- Multiple retrieval question datasets (V1–V4).
+- Precision@K, calculated as relevant results in the top K divided by K, even when fewer than K results are returned.
+- Recall@K.
+- Mean Reciprocal Rank (MRR).
+- Normalized Discounted Cumulative Gain (NDCG).
+- Duplicate retrieval rate.
+- Retrieval latency measurements.
+- Question-level retrieval diagnostics.
+
+### Hybrid Retrieval Experiments
+
+Experiments compared:
+
+1. Baseline hybrid retrieval using RRF K=40.
+2. Hybrid retrieval with controlled BM25 synonym expansion using RRF K=40.
+3. Baseline hybrid retrieval using RRF K=60.
+
+### V4 Benchmark Results
+
+| Metric | Baseline K=40 | Expanded K=40 | Baseline K=60 |
+|---|---:|---:|---:|
+| Precision@5 | 0.2760 | 0.2840 | 0.2720 |
+| Recall@5 | 0.9700 | 0.9867 | 0.9633 |
+| MRR | 0.8857 | 0.9033 | 0.8857 |
+| NDCG@5 | 0.8898 | 0.9112 | 0.8856 |
+| Duplicate Rate | 0 | 0 | 0 |
+
+**Experiment observations:**
+
+- Controlled synonym expansion improved all four retrieval quality metrics in this V4 experiment.
+- Three questions improved, 47 remained unchanged, and none regressed under the experiment's question-level classification.
+- RRF K=40 performed better than K=60 on the aggregate V4 metrics.
+- These results apply to the current evaluation dataset and do not guarantee improvements for every possible query.
+
+The current production configuration uses RRF K=40 with controlled BM25 synonym expansion enabled.
 
 ---
 
@@ -147,6 +201,7 @@ enterprise-ai-knowledge-platform/
 │   │   │   ├── embedding_service.py
 │   │   │   ├── hybrid_search.py
 │   │   │   ├── keyword_search.py
+│   │   │   ├── query_expansion.py
 │   │   │   ├── llm_service.py
 │   │   │   ├── prompt_builder.py
 │   │   │   ├── query_rewriter.py
@@ -156,10 +211,19 @@ enterprise-ai-knowledge-platform/
 │   │   │
 │   │   └── main.py
 │   │
+│   ├── evaluation/
+│   │   ├── corpus/
+│   │   ├── dataset/
+│   │   ├── reports/
+│   │   ├── build_evaluation_collection.py
+│   │   ├── diagnose_retrieval.py
+│   │   ├── evaluator.py
+│   │   ├── experiment_bm25_expansion.py
+│   │   └── experiment_hybrid_bm25_expansion.py
+│   │
 │   ├── tests/
 │   ├── requirements.txt
-│   ├── requirements-dev.txt
-│   └── test_company_policy.txt
+│   └── requirements-dev.txt
 │
 ├── .gitignore
 └── README.md
@@ -171,7 +235,7 @@ enterprise-ai-knowledge-platform/
 
 ### Prerequisites
 
-- Python 3.14 (the current development environment uses Python 3.14.7).
+- Python 3.14.
 - Git.
 - Ollama.
 - Sufficient memory and storage for the embedding model and vector database.
@@ -230,10 +294,42 @@ http://127.0.0.1:8000
 
 ### 6. Explore API documentation
 
-FastAPI automatically provides interactive API documentation:
-
 - Swagger UI: http://127.0.0.1:8000/docs
 - ReDoc: http://127.0.0.1:8000/redoc
+
+---
+
+## Evaluation
+
+Run evaluation from the repository root.
+
+Set the backend Python path:
+
+```powershell
+$env:PYTHONPATH = "$PWD\backend"
+```
+
+Run the V3 retrieval evaluation:
+
+```powershell
+python backend/evaluation/evaluator.py --dataset v3 --top-k 5 --rrf-k 40
+```
+
+The evaluator uses the isolated `enterprise_evaluation` collection by default.
+
+To explicitly select a collection:
+
+```powershell
+python backend/evaluation/evaluator.py --dataset v3 --top-k 5 --rrf-k 40 --collection enterprise_evaluation
+```
+
+Evaluation reports are stored under:
+
+```text
+backend/evaluation/reports/
+```
+
+The experimental scripts can be used to investigate BM25 synonym expansion and hybrid retrieval configurations.
 
 ---
 
@@ -258,17 +354,16 @@ FastAPI automatically provides interactive API documentation:
 
 ## Testing
 
-The project includes automated tests covering core backend functionality.
+Run the complete backend test suite from the repository root:
 
-Run the complete test suite from the `backend` directory:
-
-```bash
-python -m pytest -v
+```powershell
+$env:PYTHONPATH = "$PWD\backend"
+python -m pytest backend/tests -v
 ```
 
-**Latest recorded test result:**
+### Latest Recorded Test Result
 
-- 80 tests passed.
+- **143 tests passed.**
 - 0 test failures.
 - 1 third-party ChromaDB deprecation warning.
 
@@ -279,23 +374,28 @@ Test coverage includes:
 - Text chunking.
 - Hybrid retrieval.
 - BM25 keyword search.
+- Query expansion.
 - Context filtering.
 - Query rewriting.
 - Answer extraction.
 - Answer validation.
 - RAG service behaviour.
+- Vector store operations.
+- Evaluation functionality.
 
 ---
 
 ## Engineering Concepts Demonstrated
-
-This project brings together several practical AI and backend engineering concepts:
 
 - Designing modular REST APIs using FastAPI.
 - Building document ingestion and processing pipelines.
 - Generating and storing vector embeddings.
 - Implementing semantic and lexical information retrieval.
 - Combining ranked retrieval results using Reciprocal Rank Fusion.
+- Implementing controlled query expansion.
+- Designing isolated retrieval evaluation environments.
+- Measuring retrieval performance using information retrieval metrics.
+- Diagnosing retrieval failures.
 - Designing conversational RAG workflows.
 - Managing conversation state with SQLite.
 - Building context filtering and answer validation components.
@@ -312,6 +412,7 @@ Current implementation limitations include:
 - Answer grounding relies on lexical heuristics rather than a dedicated semantic verification model.
 - The language model currently runs locally through Ollama.
 - Retrieval quality depends on document quality, chunking, and retrieval configuration.
+- Synonym expansion uses a manually curated vocabulary and is not a general-purpose query understanding system.
 - Production authentication, authorization, and multi-tenant isolation are not yet implemented.
 - A production frontend and deployment infrastructure are not yet included.
 
@@ -319,18 +420,27 @@ Current implementation limitations include:
 
 ## Roadmap
 
-Planned engineering improvements:
+### Completed
+- [x] Implement document ingestion and processing.
+- [x] Implement semantic retrieval.
+- [x] Implement BM25 keyword retrieval.
+- [x] Implement hybrid retrieval using RRF.
+- [x] Add retrieval evaluation datasets and metrics.
+- [x] Benchmark RRF configurations.
+- [x] Evaluate controlled BM25 synonym expansion.
+- [x] Add retrieval diagnostics.
+- [x] Expand automated backend test coverage.
 
-- [ ] Build a modern web frontend.
-- [ ] Add document-level access control.
+### In Progress / Planned
+- [ ] Further improve retrieval accuracy and robustness.
 - [ ] Improve semantic answer verification.
-- [ ] Implement advanced reranking.
-- [ ] Add structured observability and logging.
-- [ ] Add Docker-based deployment.
 - [ ] Implement authentication and authorization.
-- [ ] Add evaluation datasets and RAG quality metrics.
+- [ ] Add document-level access control.
+- [ ] Add advanced reranking.
+- [ ] Add structured observability and logging.
+- [ ] Build a modern web frontend.
+- [ ] Add Docker-based deployment.
 - [ ] Add CI/CD using GitHub Actions.
-- [ ] Benchmark retrieval accuracy and response latency.
 
 ---
 

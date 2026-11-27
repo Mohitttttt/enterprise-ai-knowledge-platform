@@ -17,15 +17,12 @@ def precision_at_k(
 
     retrieved = retrieved_ids[:k]
 
-    if not retrieved:
-        return 0.0
-
     relevant_count = sum(
         1 for item in retrieved
         if item in relevant_ids
     )
 
-    return relevant_count / len(retrieved)
+    return relevant_count / k
 
 
 def recall_at_k(

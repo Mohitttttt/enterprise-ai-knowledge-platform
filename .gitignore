@@ -49,3 +49,7 @@ backend/evaluation/reports/evaluation_*.json
 
 # Evaluation dataset backups
 backend/evaluation/dataset/retrieval_questions_backup.json
+
+# Temporary and unsafe development files
+README_backup.md
+backend/vector_store_demo.py

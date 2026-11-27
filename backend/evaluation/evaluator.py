@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from app.services.hybrid_search import HybridSearch
+from app.services.vector_store import VectorStore
 
 from evaluation.metrics import (
     precision_at_k,
@@ -451,6 +452,19 @@ def main():
         ),
     )
 
+    parser.add_argument(
+        "--collection",
+        choices=[
+            "enterprise_evaluation",
+            "enterprise_knowledge",
+        ],
+        default="enterprise_evaluation",
+        help=(
+            "ChromaDB collection to evaluate. "
+            "Defaults to enterprise_evaluation."
+        ),
+    )
+
     args = parser.parse_args()
 
     if args.top_k <= 0:
@@ -469,13 +483,33 @@ def main():
 
     dataset_path = dataset_paths[args.dataset]
 
-    # Run evaluation
+    # Select the requested ChromaDB collection.
+
+    selected_store = VectorStore(
+        collection_name=args.collection
+    )
+
+    if selected_store.collection.count() == 0:
+        parser.error(
+            f"Collection '{args.collection}' is empty. "
+            "Build or populate the collection before evaluation."
+        )
+
+    search_service = HybridSearch(
+        rrf_k=args.rrf_k,
+        store=selected_store,
+    )
+
+    # Run evaluation against the selected collection.
 
     report = evaluate_retrieval(
+        search_service=search_service,
         top_k=args.top_k,
         dataset_path=dataset_path,
         rrf_k=args.rrf_k,
     )
+
+    report["collection"] = args.collection
 
     report["generated_at"] = datetime.now(
         timezone.utc

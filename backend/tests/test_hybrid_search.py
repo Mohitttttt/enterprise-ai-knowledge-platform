@@ -295,3 +295,345 @@ def test_hybrid_search_respects_final_top_k(monkeypatch):
     )
 
     assert len(results) == 5
+# --------------------------------------------------
+# TEST 11: Diagnostic Search Exposes Both Rankings
+# --------------------------------------------------
+
+def test_search_with_diagnostics_exposes_rankings(monkeypatch):
+
+    class FakeVectorStore:
+
+        def search(self, query_embedding, n_results):
+            return {
+                "ids": [["doc_a", "doc_b"]],
+                "documents": [["Document A", "Document B"]],
+                "metadatas": [[{}, {}]],
+                "distances": [[0.1, 0.2]],
+            }
+
+    class FakeKeywordSearch:
+
+        def search(self, query, top_k):
+            return [
+                {
+                    "id": "doc_b",
+                    "document": "Document B",
+                    "metadata": {},
+                    "score": 2.0,
+                },
+                {
+                    "id": "doc_c",
+                    "document": "Document C",
+                    "metadata": {},
+                    "score": 1.0,
+                },
+            ]
+
+    service = HybridSearch(rrf_k=40)
+    service.vector_store = FakeVectorStore()
+    service.keyword_search = FakeKeywordSearch()
+
+    monkeypatch.setattr(
+        hybrid_module,
+        "generate_embedding",
+        lambda query: [0.1, 0.2, 0.3],
+    )
+
+    results = service.search_with_diagnostics(
+        "annual leave",
+        top_k=2,
+    )
+
+    assert len(results["semantic_results"]) == 2
+    assert len(results["keyword_results"]) == 2
+    assert len(results["fused_results"]) == 3
+
+    assert results["semantic_results"][0]["id"] == "doc_a"
+    assert results["keyword_results"][0]["id"] == "doc_b"
+
+
+# --------------------------------------------------
+# TEST 12: Diagnostic Search Calculates RRF Contributions
+# --------------------------------------------------
+
+def test_search_with_diagnostics_calculates_contributions(monkeypatch):
+
+    class FakeVectorStore:
+
+        def search(self, query_embedding, n_results):
+            return {
+                "ids": [["doc_a", "doc_b"]],
+                "documents": [["Document A", "Document B"]],
+                "metadatas": [[{}, {}]],
+                "distances": [[0.1, 0.2]],
+            }
+
+    class FakeKeywordSearch:
+
+        def search(self, query, top_k):
+            return [
+                {
+                    "id": "doc_b",
+                    "document": "Document B",
+                    "metadata": {},
+                    "score": 2.0,
+                },
+                {
+                    "id": "doc_c",
+                    "document": "Document C",
+                    "metadata": {},
+                    "score": 1.0,
+                },
+            ]
+
+    service = HybridSearch(rrf_k=40)
+    service.vector_store = FakeVectorStore()
+    service.keyword_search = FakeKeywordSearch()
+
+    monkeypatch.setattr(
+        hybrid_module,
+        "generate_embedding",
+        lambda query: [0.1, 0.2, 0.3],
+    )
+
+    results = service.search_with_diagnostics(
+        "annual leave",
+        top_k=2,
+    )
+
+    best_result = results["fused_results"][0]
+
+    assert best_result["id"] == "doc_b"
+    assert best_result["semantic_rank"] == 2
+    assert best_result["keyword_rank"] == 1
+    assert best_result["final_rank"] == 1
+
+    expected_semantic = 1 / 42
+    expected_keyword = 1 / 41
+
+    assert best_result["semantic_rrf_contribution"] == pytest.approx(
+        expected_semantic
+    )
+
+    assert best_result["keyword_rrf_contribution"] == pytest.approx(
+        expected_keyword
+    )
+
+    assert best_result["rrf_score"] == pytest.approx(
+        expected_semantic + expected_keyword
+    )
+
+
+# --------------------------------------------------
+# TEST 13: Diagnostic Search Handles Empty Queries
+# --------------------------------------------------
+
+def test_search_with_diagnostics_handles_empty_query():
+
+    service = HybridSearch()
+
+    results = service.search_with_diagnostics("")
+
+    assert results == {
+        "semantic_results": [],
+        "keyword_results": [],
+        "fused_results": [],
+    }
+# --------------------------------------------------
+# TEST 14: Constructor Dependency Injection
+# --------------------------------------------------
+
+def test_hybrid_search_accepts_injected_dependencies():
+
+    class FakeVectorStore:
+        pass
+
+    class FakeKeywordSearch:
+        pass
+
+    store = FakeVectorStore()
+    keyword_service = FakeKeywordSearch()
+
+    service = HybridSearch(
+        rrf_k=40,
+        store=store,
+        keyword_service=keyword_service,
+    )
+
+    assert service.vector_store is store
+    assert service.keyword_search is keyword_service
+
+
+# --------------------------------------------------
+# TEST 15: Diagnostic Search Handles Empty Semantic Results
+# --------------------------------------------------
+
+def test_search_with_diagnostics_handles_empty_semantic_results(
+    monkeypatch,
+):
+
+    class FakeVectorStore:
+
+        def search(self, query_embedding, n_results):
+            return {
+                "ids": [[]],
+                "documents": [[]],
+                "metadatas": [[]],
+                "distances": [[]],
+            }
+
+    class FakeKeywordSearch:
+
+        def search(self, query, top_k):
+            return [
+                {
+                    "id": "doc_a",
+                    "document": "Document A",
+                    "metadata": {},
+                    "score": 2.0,
+                }
+            ]
+
+    service = HybridSearch(
+        store=FakeVectorStore(),
+        keyword_service=FakeKeywordSearch(),
+    )
+
+    monkeypatch.setattr(
+        hybrid_module,
+        "generate_embedding",
+        lambda query: [0.1, 0.2, 0.3],
+    )
+
+    results = service.search_with_diagnostics(
+        "annual leave",
+        top_k=2,
+    )
+
+    assert results["semantic_results"] == []
+    assert len(results["keyword_results"]) == 1
+    assert results["fused_results"][0]["id"] == "doc_a"
+
+
+# --------------------------------------------------
+# TEST 16: Diagnostic Search Rejects Invalid Top K
+# --------------------------------------------------
+
+def test_search_with_diagnostics_rejects_invalid_top_k():
+
+    service = HybridSearch()
+
+    with pytest.raises(
+        ValueError,
+        match="top_k must be greater than zero",
+    ):
+        service.search_with_diagnostics(
+            "annual leave",
+            top_k=0,
+        )
+
+
+# --------------------------------------------------
+# TEST 17: Normal and Diagnostic Search Are Consistent
+# --------------------------------------------------
+
+def test_normal_and_diagnostic_search_return_same_top_results(
+    monkeypatch,
+):
+
+    class FakeVectorStore:
+
+        def search(self, query_embedding, n_results):
+            return {
+                "ids": [["doc_a", "doc_b"]],
+                "documents": [["Document A", "Document B"]],
+                "metadatas": [[{}, {}]],
+                "distances": [[0.1, 0.2]],
+            }
+
+    class FakeKeywordSearch:
+
+        def search(self, query, top_k):
+            return [
+                {
+                    "id": "doc_b",
+                    "document": "Document B",
+                    "metadata": {},
+                    "score": 2.0,
+                },
+                {
+                    "id": "doc_c",
+                    "document": "Document C",
+                    "metadata": {},
+                    "score": 1.0,
+                },
+            ]
+
+    service = HybridSearch(
+        rrf_k=40,
+        store=FakeVectorStore(),
+        keyword_service=FakeKeywordSearch(),
+    )
+
+    monkeypatch.setattr(
+        hybrid_module,
+        "generate_embedding",
+        lambda query: [0.1, 0.2, 0.3],
+    )
+
+    normal_results = service.search(
+        "annual leave",
+        top_k=2,
+    )
+
+    diagnostic_results = service.search_with_diagnostics(
+        "annual leave",
+        top_k=2,
+    )
+
+    normal_ids = [
+        result["id"]
+        for result in normal_results
+    ]
+
+    diagnostic_ids = [
+        result["id"]
+        for result in diagnostic_results["fused_results"][:2]
+    ]
+
+    assert normal_ids == diagnostic_ids
+
+
+# --------------------------------------------------
+# TEST 18: Production Singleton Enables Query Expansion
+# --------------------------------------------------
+
+def test_production_hybrid_search_enables_query_expansion():
+
+    assert (
+        hybrid_module.hybrid_search
+        .keyword_search.enable_query_expansion
+        is True
+    )
+
+
+# --------------------------------------------------
+# TEST 19: Default Keyword Search Keeps Expansion Disabled
+# --------------------------------------------------
+
+def test_default_keyword_search_keeps_expansion_disabled():
+
+    service = hybrid_module.KeywordSearch()
+
+    assert service.enable_query_expansion is False
+
+
+# --------------------------------------------------
+# TEST 20: Default Hybrid Search Preserves Baseline
+# --------------------------------------------------
+
+def test_default_hybrid_search_preserves_baseline():
+
+    service = HybridSearch()
+
+    assert service.keyword_search.enable_query_expansion is False

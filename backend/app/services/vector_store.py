@@ -11,18 +11,25 @@ VECTOR_DB_DIR.mkdir(parents=True, exist_ok=True)
 
 class VectorStore:
 
-    def __init__(self):
+    def __init__(
+        self,
+        collection_name: str = "enterprise_knowledge",
+    ):
+
+        if not collection_name or not collection_name.strip():
+            raise ValueError("Collection name cannot be empty.")
 
         # Tracks changes to the vector database.
         # Used by KeywordSearch to invalidate its cached BM25 index.
         self._version = 0
+        self.collection_name = collection_name
 
         self.client = chromadb.PersistentClient(
             path=str(VECTOR_DB_DIR)
         )
 
         self.collection = self.client.get_or_create_collection(
-            name="enterprise_knowledge",
+            name=collection_name,
             metadata={
                 "description": "Enterprise document knowledge embeddings",
                 "hnsw:space": "cosine",

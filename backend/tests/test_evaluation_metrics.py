@@ -15,6 +15,17 @@ def test_precision_at_k():
     assert precision_at_k(retrieved, relevant, 4) == 0.5
 
 
+def test_precision_at_k_when_fewer_than_k_results_returned():
+    retrieved = ["A", "B", "C"]
+    relevant = {"A", "B", "C"}
+
+    assert precision_at_k(retrieved, relevant, 5) == 0.6
+
+
+def test_precision_at_k_with_empty_results():
+    assert precision_at_k([], {"A", "B"}, 5) == 0.0
+
+
 def test_recall_at_k():
     retrieved = ["A", "B", "C"]
     relevant = {"A", "C", "D"}

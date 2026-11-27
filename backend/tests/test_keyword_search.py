@@ -374,3 +374,42 @@ def test_keyword_search_caches_empty_corpus():
 
     # Empty corpus should also be cached.
     assert empty_store.collection.get_calls == 1
+
+# --------------------------------------------------
+# TEST 14: Query Expansion Retrieves Synonym Matches
+# --------------------------------------------------
+
+def test_keyword_search_query_expansion_retrieves_synonyms():
+
+    store = FakeStore()
+
+    store.add_document(
+        document_id="doc_4",
+        document="Company device support and maintenance guidelines.",
+        metadata={"filename": "device_policy.txt"},
+    )
+
+    # Baseline keyword search: expansion disabled.
+    baseline = KeywordSearch(
+        store=store,
+        enable_query_expansion=False,
+    )
+
+    # Expanded keyword search.
+    expanded = KeywordSearch(
+        store=store,
+        enable_query_expansion=True,
+    )
+
+    baseline_results = baseline.search("laptop")
+
+    expanded_results = expanded.search("laptop")
+
+    # "laptop" does not directly occur in the corpus.
+    assert baseline_results == []
+
+    # "laptop" expands to include "device".
+    assert any(
+        result["id"] == "doc_4"
+        for result in expanded_results
+    )
