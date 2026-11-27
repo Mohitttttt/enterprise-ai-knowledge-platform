@@ -42,12 +42,16 @@ Users can upload documents, search their contents using natural language, and as
 - Ollama integration for language model responses.
 
 ### Answer Validation
-- Lexical grounding checks against retrieved context.
+- Lexical grounding checks against retrieved document context.
 - Empty and unsupported answer detection.
 - Prompt leakage detection.
+- Numeric claim validation to detect unsupported values.
+- Numeric-unit consistency checks for time periods, currencies, percentages, and supported measurements.
+- Claim-level evidence matching against document excerpts.
+- Explicit negation consistency checks.
 - Fallback mechanisms when LLM responses are unavailable or invalid.
 
-**Note:** Answer validation currently uses heuristic and lexical checks. It is not a complete semantic fact-verification system.
+**Note:** Answer validation uses deterministic lexical and heuristic checks. Numeric matching, claim splitting, and negation detection have limitations. It is not a complete semantic fact-verification system.
 
 ---
 
@@ -363,7 +367,7 @@ python -m pytest backend/tests -v
 
 ### Latest Recorded Test Result
 
-- **143 tests passed.**
+- **161 tests passed.**
 - 0 test failures.
 - 1 third-party ChromaDB deprecation warning.
 
@@ -409,7 +413,7 @@ This project is actively evolving.
 
 Current implementation limitations include:
 
-- Answer grounding relies on lexical heuristics rather than a dedicated semantic verification model.
+- Answer grounding uses lexical overlap, numeric matching, claim-level evidence matching, and heuristic negation checks rather than a dedicated semantic verification model.
 - The language model currently runs locally through Ollama.
 - Retrieval quality depends on document quality, chunking, and retrieval configuration.
 - Synonym expansion uses a manually curated vocabulary and is not a general-purpose query understanding system.
@@ -421,6 +425,7 @@ Current implementation limitations include:
 ## Roadmap
 
 ### Completed
+
 - [x] Implement document ingestion and processing.
 - [x] Implement semantic retrieval.
 - [x] Implement BM25 keyword retrieval.
@@ -432,6 +437,7 @@ Current implementation limitations include:
 - [x] Expand automated backend test coverage.
 
 ### In Progress / Planned
+
 - [ ] Further improve retrieval accuracy and robustness.
 - [ ] Improve semantic answer verification.
 - [ ] Implement authentication and authorization.
